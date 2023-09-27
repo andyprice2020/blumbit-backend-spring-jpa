@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -15,13 +16,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "customers", schema = "customer")
-public class Customer {
+@Table(name = "employees", schema = "customer")
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id", nullable = false, unique = true)
-    private long customerId;
+    @Column(name = "employee_id", nullable = false, unique = true)
+    private long employeeId;
 
     @Column(name = "first_name", length = 45)
     private String firstName;
@@ -29,8 +30,14 @@ public class Customer {
     @Column(name = "last_name", length = 45)
     private String lastName;
 
-    @Column(length = 100)
-    private String company;
+    @Column(length = 45)
+    private String title;
+
+    @Column(name = "birth_date")
+    private LocalDateTime birthDate;
+
+    @Column(name = "hire_date")
+    private LocalDateTime hireDate;
 
     @Column(length = 200)
     private String address;
@@ -57,9 +64,7 @@ public class Customer {
     private String email;
 
     // MANEJO DE FORMA BIDIRECCIONAL LA PERSISTENCIA ENTRE ESTAS DOS CLASES
-    @ManyToOne()
-    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
-    @JsonBackReference(value = "employees")
-    private Employee employees;
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employees")
+    @JsonManagedReference(value = "employees")
+    private Set<Customer> customers;
 }
